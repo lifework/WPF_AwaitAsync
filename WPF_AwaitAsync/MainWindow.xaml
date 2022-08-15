@@ -7,6 +7,8 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-
+        <StackPanel Grid.Column="1" Margin="5,5,0,10" Orientation="Horizontal"  VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Button Height="20" Click="onRunButtonClicked" Content="実行する" />
+        </StackPanel>
     </Grid>
 </Window>

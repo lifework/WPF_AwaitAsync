@@ -24,5 +24,10 @@ namespace WPF_AwaitAsync
         {
             InitializeComponent();
         }
+
+        private void onRunButtonClicked(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show($"クリックされました");
+        }
     }
 }
