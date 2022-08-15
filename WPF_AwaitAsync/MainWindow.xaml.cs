@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,18 +27,32 @@ namespace WPF_AwaitAsync
             InitializeComponent();
         }
 
-        private void onRunButtonClicked(object sender, RoutedEventArgs e)
+        private async void onRunButtonClicked(object sender, RoutedEventArgs e)
         {
+            WriteLine($" BEGIN onRunButtonClicked");
+            await AsyncTaskMethod();
             AsyncVoidMethod();
+            WriteLine($" END onRunButtonClicked");
         }
 
         private async void AsyncVoidMethod()
         {
             await Task.Run(() =>
             {
-                WriteLine($"1");
+                WriteLine($"Task.Run() in AsyncVoidMethod");
+                Thread.Sleep(5 * 1000);
             });
         }
+
+        private async Task AsyncTaskMethod()
+        {
+            await Task.Run(() =>
+            {
+                WriteLine($"Task.Run() in AsyncTaskMethod");
+                Thread.Sleep(3 * 1000);
+            });
+        }
+
 
         private void WriteLine(string text)
         {
