@@ -31,6 +31,7 @@ namespace WPF_AwaitAsync
         {
             WriteLine($" BEGIN onRunButtonClicked");
             await AsyncTaskMethod();
+            await AsyncTaskMethod();
             AsyncVoidMethod();
             WriteLine($" END onRunButtonClicked");
         }
@@ -39,8 +40,9 @@ namespace WPF_AwaitAsync
         {
             await Task.Run(() =>
             {
-                WriteLine($"Task.Run() in AsyncVoidMethod");
+                WriteLine($"BEGIN Task.Run() in AsyncVoidMethod");
                 Thread.Sleep(5 * 1000);
+                WriteLine($"END Task.Run() in AsyncVoidMethod");
             });
         }
 
@@ -48,8 +50,9 @@ namespace WPF_AwaitAsync
         {
             await Task.Run(() =>
             {
-                WriteLine($"Task.Run() in AsyncTaskMethod");
+                WriteLine($"BEGIN Task.Run() in AsyncTaskMethod");
                 Thread.Sleep(3 * 1000);
+                WriteLine($"END Task.Run() in AsyncTaskMethod");
             });
         }
 
