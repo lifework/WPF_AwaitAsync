@@ -18,7 +18,7 @@ using System.Windows.Shapes;
 namespace WPF_AwaitAsync
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for MainWindow.xamlhttps://partner.microsoft.com/ja-jp/dashboard/insights/analytics/overview
     /// </summary>
     public partial class MainWindow : Window
     {
@@ -31,7 +31,6 @@ namespace WPF_AwaitAsync
         {
             WriteLine($" BEGIN onRunButtonClicked");
             await AsyncTaskMethod();
-            await AsyncTaskMethod();
             AsyncVoidMethod();
             WriteLine($" END onRunButtonClicked");
         }
@@ -41,18 +40,29 @@ namespace WPF_AwaitAsync
             await Task.Run(() =>
             {
                 WriteLine($"BEGIN Task.Run() in AsyncVoidMethod");
-                Thread.Sleep(5 * 1000);
+                Thread.Sleep(3 * 1000);
                 WriteLine($"END Task.Run() in AsyncVoidMethod");
             });
         }
 
         private async Task AsyncTaskMethod()
         {
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 WriteLine($"BEGIN Task.Run() in AsyncTaskMethod");
+                await AsyncTaskMethod2();
                 Thread.Sleep(3 * 1000);
                 WriteLine($"END Task.Run() in AsyncTaskMethod");
+            });
+        }
+
+        private async Task AsyncTaskMethod2()
+        {
+            await Task.Run(() =>
+            {
+                WriteLine($"BEGIN Task.Run() in AsyncTaskMethod2");
+                Thread.Sleep(3 * 1000);
+                WriteLine($"END Task.Run() in AsyncTaskMethod2");
             });
         }
 
