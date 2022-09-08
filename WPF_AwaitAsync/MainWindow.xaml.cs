@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,45 +28,76 @@ namespace WPF_AwaitAsync
             InitializeComponent();
         }
 
-        private async void onRunButtonClicked(object sender, RoutedEventArgs e)
+        private async void onRunButton1Clicked(object sender, RoutedEventArgs e)
         {
-            WriteLine($" BEGIN onRunButtonClicked");
-            await AsyncTaskMethod();
-            AsyncVoidMethod();
-            WriteLine($" END onRunButtonClicked");
+            await TaskAsync("A");
+            await TaskAsync("B");
+            VoidAsync("C");
+            VoidAsync("D");
         }
 
-        private async void AsyncVoidMethod()
+
+        private async void onRunButton2Clicked(object sender, RoutedEventArgs e)
+        {
+            // A と B は排他的になる。どっちが先かはわからない。
+            _ = Task.Run(() => LockedSync("A"));
+            _ = Task.Run(() => LockedSync("B"));
+
+            Thread.Sleep(1000);
+
+            // Task.Run のタイミングは排他的だけど、
+            // その先の CounterAsync は非同期なので、出力は混ざる。
+            _ = Task.Run(() => LockedAsync("Async A"));
+            _ = Task.Run(() => LockedAsync("Async B"));
+        }
+
+        private static readonly Object LockObject = new Object();
+        private void LockedSync(string label)
+        {
+            lock (LockObject)
+            {
+                Counter(label);
+            }
+        }
+
+        private void LockedAsync(string label)
+        {
+            lock (LockObject)
+            {
+                Task.Run(() =>
+                {
+                    Counter(label);
+                });
+            }
+        }
+
+
+
+        private async void VoidAsync(string label)
         {
             await Task.Run(() =>
             {
-                WriteLine($"BEGIN Task.Run() in AsyncVoidMethod");
-                Thread.Sleep(3 * 1000);
-                WriteLine($"END Task.Run() in AsyncVoidMethod");
+                Counter(label);
             });
         }
 
-        private async Task AsyncTaskMethod()
-        {
-            await Task.Run(async () =>
-            {
-                WriteLine($"BEGIN Task.Run() in AsyncTaskMethod");
-                await AsyncTaskMethod2();
-                Thread.Sleep(3 * 1000);
-                WriteLine($"END Task.Run() in AsyncTaskMethod");
-            });
-        }
-
-        private async Task AsyncTaskMethod2()
+        private async Task TaskAsync(string label)
         {
             await Task.Run(() =>
             {
-                WriteLine($"BEGIN Task.Run() in AsyncTaskMethod2");
-                Thread.Sleep(3 * 1000);
-                WriteLine($"END Task.Run() in AsyncTaskMethod2");
+                Counter(label);
             });
         }
 
+
+        private const int CounterMaxValue = 20;
+        private void Counter(string label, int max = CounterMaxValue)
+        {
+            for (var n = 0; n < max; n++)
+            {
+                WriteLine($"{label} = {n}");
+            }
+        }
 
         private void WriteLine(string text)
         {

@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:WPF_AwaitAsync"
         mc:Ignorable="d"
         Title="MainWindow" Height="200" Width="400">
-    <Grid>
-        <Button Width="200" Height="50" Click="onRunButtonClicked" Content="実行する" />
-    </Grid>
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Button Width="200" Height="50" Click="onRunButton1Clicked" Content="並列" />
+        <Button Width="200" Height="50" Click="onRunButton2Clicked" Content="排他" />
+    </StackPanel>
 </Window>
